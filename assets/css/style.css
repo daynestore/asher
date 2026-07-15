@@ -1175,6 +1175,25 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
+/* ── MOBILE FOOTER ── */
+.mobile-footer {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--color-primary);
+  color: #fff;
+  text-align: center;
+  padding: 6px;
+  font-family: 'Rubik', sans-serif;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(124, 58, 237, 0.15);
+}
+
 /* ═══════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════ */
@@ -1196,9 +1215,10 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   .pos-grid {
     grid-template-columns: 1fr;
   }
+  .mobile-footer { display: block; }
   .cart-panel {
     position: fixed;
-    bottom: 0;
+    bottom: 28px;
     left: 0;
     right: 0;
     top: auto;
@@ -1209,7 +1229,7 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
     transition: transform var(--transition-slow);
   }
   .cart-panel.expanded { transform: translateY(0); }
-  #pageContent { padding-bottom: 80px; }
+  #pageContent { padding-bottom: 108px; }
 }
 
 /* Mobile (≤767px) */
