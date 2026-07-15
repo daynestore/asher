@@ -277,6 +277,7 @@ const Pages = {
     const total = Pages._posCart.reduce((s, c) => s + c.price * c.qty, 0);
 
     el('pos-cart-count').textContent = count;
+    if(el('pos-mobile-cart-count-btn')) el('pos-mobile-cart-count-btn').textContent = count;
     el('pos-grand-total').textContent = fmt(total);
 
     const items = el('pos-cart-items');

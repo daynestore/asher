@@ -1216,19 +1216,51 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
     grid-template-columns: 1fr;
   }
   .mobile-footer { display: block; }
+  
+  .pos-mobile-complete-btn {
+    display: block;
+    position: fixed;
+    bottom: 60px; /* Above the mobile footer */
+    left: 16px;
+    right: 16px;
+    background: var(--color-primary);
+    color: white;
+    padding: 16px;
+    border-radius: var(--radius-full);
+    text-align: center;
+    font-weight: 600;
+    font-size: var(--text-lg);
+    z-index: 90;
+    box-shadow: var(--shadow-lg);
+    border: none;
+    cursor: pointer;
+  }
+  
   .cart-panel {
     position: fixed;
-    bottom: 28px;
+    bottom: 0;
     left: 0;
     right: 0;
-    top: auto;
-    max-height: 50dvh;
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    top: 0; /* Occupy full page */
+    max-height: none;
+    border-radius: 0;
     z-index: var(--z-overlay);
-    transform: translateY(calc(100% - 70px));
+    transform: translateY(100%);
     transition: transform var(--transition-slow);
   }
   .cart-panel.expanded { transform: translateY(0); }
+  
+  /* Show close button when expanded */
+  .cart-panel.expanded #pos-cart-close-btn {
+    display: flex !important;
+  }
+  /* Hide the cart-header toggle behavior since it's full screen now */
+  .cart-panel .cart-header {
+    pointer-events: none; 
+  }
+  .cart-panel .cart-header button {
+    pointer-events: auto; /* Buttons still work */
+  }
   #pageContent { padding-bottom: 108px; }
 }
 
@@ -1258,6 +1290,10 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   .section-card-header { flex-direction: column; align-items: flex-start; }
 
   .ds-tabs { overflow-x: auto; flex-wrap: nowrap; }
+
+  /* Reduce Process Sale button size */
+  .btn-checkout { padding: 12px; font-size: var(--text-md); gap: 6px; }
+  .btn-checkout svg { width: 16px !important; height: 16px !important; }
 }
 
 /* Small Mobile (≤375px) */
