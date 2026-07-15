@@ -78,18 +78,31 @@ const Modal = {
 // ── Navigation ──
 const Nav = {
   current: 'dashboard',
-  navigate(page) {
+  cache: {},
+  async navigate(page) {
     Nav.current = page;
     document.querySelectorAll('.nav-item').forEach(n => {
       n.classList.toggle('active', n.dataset.page === page);
     });
-    document.querySelectorAll('.module-page').forEach(p => {
-      p.classList.toggle('active', p.id === `page-${page}`);
-    });
     document.getElementById('pageTitle').textContent = Nav.pageTitle(page);
-    // Close sidebar on mobile
     if (window.innerWidth < 1024) App.closeSidebar();
-    // Refresh page data
+
+    const container = document.getElementById('pageContent');
+    
+    if (!Nav.cache[page]) {
+      container.innerHTML = '<div style="display:flex;justify-content:center;padding:100px 0;"><div class="spinner-border text-primary" role="status"></div></div>';
+      try {
+        const res = await fetch(`views/${page}.html?v=${Date.now()}`); // cache bust just in case during development
+        if (!res.ok) throw new Error('Page not found');
+        Nav.cache[page] = await res.text();
+      } catch(e) {
+        container.innerHTML = `<div class="empty-state">Failed to load view. <button class="btn-secondary mt-3" onclick="Nav.navigate('${page}')">Retry</button></div>`;
+        return;
+      }
+    }
+    
+    container.innerHTML = Nav.cache[page];
+    
     if (typeof Pages[page] === 'function') Pages[page]();
   },
   pageTitle(p) {

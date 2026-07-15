@@ -1,0 +1,103 @@
+<section id="page-reports" class="module-page active">
+
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1>Reports</h1>
+            <p>Daily, weekly, monthly, and custom period sales reports.</p>
+          </div>
+        </div>
+
+        <!-- Period selector -->
+        <div class="ds-tabs mb-4" role="tablist" aria-label="Report period">
+          <button class="ds-tab active" id="rpt-tab-daily"   onclick="Pages._setReportTab(this,'daily')"   role="tab">Daily</button>
+          <button class="ds-tab"        id="rpt-tab-weekly"  onclick="Pages._setReportTab(this,'weekly')"  role="tab">Weekly</button>
+          <button class="ds-tab"        id="rpt-tab-monthly" onclick="Pages._setReportTab(this,'monthly')" role="tab">Monthly</button>
+          <button class="ds-tab"        id="rpt-tab-yearly"  onclick="Pages._setReportTab(this,'yearly')"  role="tab">Yearly</button>
+          <button class="ds-tab"        id="rpt-tab-custom"  onclick="Pages._setReportTab(this,'custom')"  role="tab">Custom</button>
+        </div>
+        <div id="rpt-custom-range" style="display:none;margin-bottom:20px">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+            <div>
+              <label class="form-label" for="report-from">From</label>
+              <input type="date" class="form-control" id="report-from" style="width:auto">
+            </div>
+            <div>
+              <label class="form-label" for="report-to">To</label>
+              <input type="date" class="form-control" id="report-to" style="width:auto">
+            </div>
+            <button class="btn-primary" style="align-self:flex-end" onclick="Pages._renderReports('custom')">Generate</button>
+          </div>
+        </div>
+
+        <!-- Report Stats -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="stat-card stat-primary">
+              <div class="stat-card-label">Total Sales</div>
+              <div class="stat-card-value" id="rpt-total-sales" style="font-size:var(--text-xl)">₱0.00</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="stat-card stat-primary">
+              <div class="stat-card-label">Cash Sales</div>
+              <div class="stat-card-value" id="rpt-cash-sales" style="font-size:var(--text-xl)">₱0.00</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="stat-card stat-blue">
+              <div class="stat-card-label">GCash Sales</div>
+              <div class="stat-card-value" id="rpt-gcash-sales" style="font-size:var(--text-xl)">₱0.00</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="stat-card stat-red">
+              <div class="stat-card-label">Utang Sales</div>
+              <div class="stat-card-value" id="rpt-utang-sales" style="font-size:var(--text-xl)">₱0.00</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="stat-card stat-primary">
+              <div class="stat-card-label">Transactions</div>
+              <div class="stat-card-value" id="rpt-txn-count" style="font-size:var(--text-xl)">0</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 col-lg-2">
+            <div class="stat-card stat-orange">
+              <div class="stat-card-label">Avg Sale</div>
+              <div class="stat-card-value" id="rpt-avg-sale" style="font-size:var(--text-xl)">₱0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-md-4">
+            <div class="stat-card stat-orange">
+              <div class="stat-card-label">Inventory Investment</div>
+              <div class="stat-card-value" id="rpt-investment">₱0.00</div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="stat-card stat-blue">
+              <div class="stat-card-label">Retail Inventory Value</div>
+              <div class="stat-card-value" id="rpt-retail-val">₱0.00</div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="stat-card stat-primary">
+              <div class="stat-card-label">Potential Gross Profit</div>
+              <div class="stat-card-value" id="rpt-gross-profit">₱0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-title">Sales Breakdown (last 20)</div></div>
+          <div class="table-responsive-wrapper" style="border:none;border-radius:0">
+            <table class="ds-table" aria-label="Sales breakdown">
+              <thead><tr><th>ID</th><th>Date</th><th>Method</th><th>Total</th></tr></thead>
+              <tbody id="rpt-sales-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      
+</section>

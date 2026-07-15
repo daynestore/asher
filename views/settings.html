@@ -1,0 +1,111 @@
+<section id="page-settings" class="module-page active">
+
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1>Settings</h1>
+            <p>Configure store information, PIN, categories, and data backup.</p>
+          </div>
+        </div>
+        <div class="row g-4">
+          <div class="col-12 col-lg-6">
+            <!-- Store Info -->
+            <div class="section-card mb-4">
+              <div class="section-card-header"><div class="section-card-title">Store Information</div></div>
+              <div class="section-card-body">
+                <div class="mb-3">
+                  <label class="form-label" for="set-store-name">Store Name <span class="required">*</span></label>
+                  <input type="text" class="form-control" id="set-store-name" placeholder="e.g. Dayne Store">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="set-store-addr">Address</label>
+                  <input type="text" class="form-control" id="set-store-addr" placeholder="Store address">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="set-store-phone">Phone</label>
+                  <input type="tel" class="form-control" id="set-store-phone" placeholder="09XX-XXX-XXXX">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="set-currency">Currency Symbol</label>
+                  <input type="text" class="form-control" id="set-currency" placeholder="₱" style="max-width:80px">
+                </div>
+                <div class="mb-4">
+                  <label class="form-label" for="set-categories">Categories (comma-separated)</label>
+                  <textarea class="form-control" id="set-categories" rows="2" placeholder="Beverages, Snacks, ..."></textarea>
+                </div>
+                <button class="btn-primary" onclick="Pages._saveSettings()">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                  Save Settings
+                </button>
+              </div>
+            </div>
+
+            <!-- Logo -->
+            <div class="section-card mb-4">
+              <div class="section-card-header"><div class="section-card-title">Store Logo</div></div>
+              <div class="section-card-body">
+                <img id="settings-logo-preview" src="" alt="Store logo" style="display:none;max-width:120px;max-height:80px;border-radius:var(--radius-md);margin-bottom:12px;border:1px solid var(--color-border);">
+                <div>
+                  <label class="btn-secondary" style="cursor:pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                    Upload Logo
+                    <input type="file" accept="image/*" style="display:none" onchange="Pages._uploadLogo(this)" aria-label="Upload store logo">
+                  </label>
+                  <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:8px">PNG, JPG, SVG. Max 2MB.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <!-- PIN -->
+            <div class="section-card mb-4">
+              <div class="section-card-header"><div class="section-card-title">Change PIN</div></div>
+              <div class="section-card-body">
+                <div class="mb-3">
+                  <label class="form-label" for="set-new-pin">New PIN (4-6 digits)</label>
+                  <input type="password" class="form-control" id="set-new-pin" placeholder="New PIN" inputmode="numeric" maxlength="6" autocomplete="new-password">
+                </div>
+                <div class="mb-4">
+                  <label class="form-label" for="set-confirm-pin">Confirm PIN</label>
+                  <input type="password" class="form-control" id="set-confirm-pin" placeholder="Confirm PIN" inputmode="numeric" maxlength="6" autocomplete="new-password">
+                </div>
+                <button class="btn-primary" onclick="Pages._changePIN()">Change PIN</button>
+              </div>
+            </div>
+
+            <!-- Backup & Restore -->
+            <div class="section-card mb-4">
+              <div class="section-card-header"><div class="section-card-title">Backup &amp; Restore</div></div>
+              <div class="section-card-body">
+                <p style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:16px">Export all data as a JSON file, or restore from a previous backup.</p>
+                <div style="display:flex;flex-wrap:wrap;gap:12px">
+                  <button class="btn-primary" onclick="Pages._exportBackup()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                    Export Backup
+                  </button>
+                  <label class="btn-secondary" style="cursor:pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                    Restore Backup
+                    <input type="file" accept=".json" style="display:none" onchange="Pages._importBackup(this)" aria-label="Restore from backup file">
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="section-card" style="border-color:var(--color-danger-light)">
+              <div class="section-card-header" style="border-color:var(--color-danger-light)">
+                <div class="section-card-title" style="color:var(--color-danger)">Danger Zone</div>
+              </div>
+              <div class="section-card-body">
+                <p style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:16px">Permanently delete all store data. This cannot be undone.</p>
+                <button class="btn-danger" onclick="Pages._clearAllData()">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                  Clear All Data
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+</section>

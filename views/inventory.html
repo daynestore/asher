@@ -1,0 +1,73 @@
+<section id="page-inventory" class="module-page active">
+
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1>Inventory</h1>
+            <p>Manage your products, stock levels, and pricing.</p>
+          </div>
+          <div class="page-header-right">
+            <button class="btn-primary" id="inv-add-btn" onclick="Pages._openInvAdd()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              Add Product
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="stat-card stat-orange">
+              <div class="stat-card-label">Investment</div>
+              <div class="stat-card-value" id="inv-total-investment" style="font-size:var(--text-xl)">₱0.00</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card stat-blue">
+              <div class="stat-card-label">Retail Value</div>
+              <div class="stat-card-value" id="inv-total-retail" style="font-size:var(--text-xl)">₱0.00</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card stat-primary">
+              <div class="stat-card-label">Potential Profit</div>
+              <div class="stat-card-value" id="inv-total-profit" style="font-size:var(--text-xl)">₱0.00</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card stat-primary">
+              <div class="stat-card-label">Total Products</div>
+              <div class="stat-card-value" id="inv-product-count" style="font-size:var(--text-xl)">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;width:100%">
+              <div class="search-wrapper" style="flex:1;min-width:200px">
+                <svg class="search-icon-inner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803 7.5 7.5 0 0015.803 15.803z"/></svg>
+                <input type="text" class="form-control" id="inv-search" placeholder="Search products or barcode..." oninput="Pages._renderInventoryTable(this.value, document.getElementById('inv-cat-filter').value)" aria-label="Search products">
+              </div>
+              <select class="form-select" id="inv-cat-filter" style="width:auto;min-width:160px" onchange="Pages._renderInventoryTable(document.getElementById('inv-search').value, this.value)" aria-label="Filter by category">
+                <option value="">All Categories</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive-wrapper" style="border:none;border-radius:0">
+            <table class="ds-table" aria-label="Products inventory">
+              <thead>
+                <tr>
+                  <th>Barcode</th><th>Product Name</th><th>Category</th>
+                  <th>Cost</th><th>Price</th><th>Stock</th>
+                  <th>Expires</th><th>Retail Value</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inv-tbody">
+                <tr><td colspan="9"><div class="empty-state"><div class="empty-state-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg></div><h5>No products yet</h5><p>Click "Add Product" to start.</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      
+</section>
