@@ -91,9 +91,9 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
         Utang (Credit)
       </a>
-      <a class="nav-item" data-page="gcash" onclick="Nav.navigate('gcash')" role="button" tabindex="0" aria-label="GCash">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>
-        GCash
+      <a class="nav-item" data-page="kulang" onclick="Nav.navigate('kulang')" role="button" tabindex="0" aria-label="Shortages">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        Shortages (Kulang)
       </a>
       <a class="nav-item" data-page="cashvault" onclick="Nav.navigate('cashvault')" role="button" tabindex="0" aria-label="Cash Vault">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg>
@@ -297,7 +297,6 @@
         <label class="form-label" for="pay-method">Payment Method</label>
         <select class="form-select" id="pay-method">
           <option value="cash">Cash (Add to Cash Vault)</option>
-          <option value="gcash">GCash (Add to GCash)</option>
         </select>
       </div>
       <div>
@@ -342,42 +341,39 @@
   </div>
 </div>
 
-<!-- GCash Modal -->
-<div class="modal-overlay" id="gcashModal" role="dialog" aria-modal="true" aria-labelledby="gcash-modal-title">
+<!-- POS Checkout Modal -->
+<div class="modal-overlay" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title">
   <div class="modal-box modal-sm">
     <div class="modal-header">
-      <div class="modal-title" id="gcash-modal-title">Add GCash Transaction</div>
-      <button class="modal-close" onclick="Modal.close('gcashModal')" aria-label="Close">
+      <div class="modal-title" id="checkout-modal-title">Complete Sale</div>
+      <button class="modal-close" onclick="Modal.close('checkoutModal')" aria-label="Close">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
     <div class="modal-body">
-      <form id="gcash-form" onsubmit="event.preventDefault();Pages._saveGCash()" novalidate>
-        <div class="mb-3">
-          <label class="form-label" for="gcash-type">Type</label>
-          <select class="form-select" id="gcash-type">
-            <option value="cash_in">Cash In</option>
-            <option value="cash_out">Cash Out</option>
-            <option value="fee">Fee</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="gcash-amount">Amount (₱) <span class="required">*</span></label>
-          <input type="number" class="form-control" id="gcash-amount" placeholder="0.00" min="0" step="0.01" inputmode="decimal">
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="gcash-fee">Fee (₱)</label>
-          <input type="number" class="form-control" id="gcash-fee" placeholder="0.00" min="0" step="0.01" inputmode="decimal">
-        </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px;align-items:center;">
+        <span style="font-size:var(--text-sm);color:var(--color-text-secondary)">Total Amount</span>
+        <span class="fw-rubik" style="font-size:var(--text-lg);font-weight:700;color:var(--color-primary)" id="checkout-total">₱0.00</span>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="checkout-tendered">Amount Tendered (₱) <span class="required">*</span></label>
+        <input type="number" class="form-control" id="checkout-tendered" placeholder="0.00" min="0" step="0.01" inputmode="decimal" oninput="Pages._posCalcChange()">
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:16px;align-items:center;">
+        <span style="font-size:var(--text-sm);color:var(--color-text-secondary)" id="checkout-change-label">Change</span>
+        <span class="fw-rubik" style="font-size:var(--text-lg);font-weight:700" id="checkout-change">₱0.00</span>
+      </div>
+      <div id="checkout-kulang-section" style="display:none;padding-top:16px;border-top:1px dashed var(--color-border)">
+        <p style="font-size:var(--text-xs);color:var(--color-warning);margin-bottom:8px"><strong>Note:</strong> The amount tendered is less than the total. The lacking balance will be recorded as a shortage.</p>
         <div>
-          <label class="form-label" for="gcash-note">Note</label>
-          <input type="text" class="form-control" id="gcash-note" placeholder="Optional">
+          <label class="form-label" for="checkout-kulang-name">Customer Name / Note <span class="required">*</span></label>
+          <input type="text" class="form-control" id="checkout-kulang-name" placeholder="Who owes this shortage?">
         </div>
-      </form>
+      </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" onclick="Modal.close('gcashModal')">Cancel</button>
-      <button class="btn-primary" onclick="Pages._saveGCash()">Add Transaction</button>
+      <button class="btn-secondary" onclick="Modal.close('checkoutModal')">Cancel</button>
+      <button class="btn-primary" onclick="Pages._posCompleteSale()">Complete Sale</button>
     </div>
   </div>
 </div>
@@ -463,7 +459,6 @@
           <label class="form-label" for="bill-source">Paid From</label>
           <select class="form-select" id="bill-source">
             <option value="cash">Cash Vault</option>
-            <option value="gcash">GCash</option>
             <option value="none">Other (Do not deduct)</option>
           </select>
         </div>

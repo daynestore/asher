@@ -319,16 +319,65 @@ const Pages = {
       const custId = el('pos-customer-select').value;
       if (!custId) { Toast.show('Select a customer for utang.','error'); return; }
       DS.sales.add({ items: [...Pages._posCart.map(c => ({ productId: c.productId, qty: c.qty, price: c.price }))], total, paymentMethod, customerId: custId });
+      Toast.show(`Sale completed! ${fmt(total)}`, 'success');
+      Pages._posCart = [];
+      Pages._posRenderCart();
+      Pages._posRenderProducts(el('pos-search').value);
     } else {
-      const sale = DS.sales.add({ items: [...Pages._posCart.map(c => ({ productId: c.productId, qty: c.qty, price: c.price }))], total, paymentMethod });
-      // Record to cashvault or gcash
-      if (paymentMethod === 'cash') {
-        DS.cashvault.add({ type: 'cash_sale', amount: total, note: `Sale #${sale.id.slice(-6).toUpperCase()}` });
-      } else if (paymentMethod === 'gcash') {
-        DS.gcash.add({ type: 'sale', amount: total, note: `Sale #${sale.id.slice(-6).toUpperCase()}` });
+      // Cash payment - open checkout modal
+      el('checkout-total').textContent = fmt(total);
+      el('checkout-tendered').value = total;
+      el('checkout-kulang-name').value = '';
+      Pages._posCalcChange();
+      Modal.open('checkoutModal');
+      setTimeout(() => {
+        el('checkout-tendered').focus();
+        el('checkout-tendered').select();
+      }, 200);
+    }
+  },
+  _posCalcChange() {
+    const total = Pages._posCart.reduce((s, c) => s + c.price * c.qty, 0);
+    const tendered = parseFloat(el('checkout-tendered').value) || 0;
+    const change = tendered - total;
+    
+    if (change < 0) {
+      el('checkout-change-label').textContent = 'Lacking (Kulang)';
+      el('checkout-change').textContent = fmt(Math.abs(change));
+      el('checkout-change').style.color = 'var(--color-danger)';
+      el('checkout-kulang-section').style.display = 'block';
+    } else {
+      el('checkout-change-label').textContent = 'Change';
+      el('checkout-change').textContent = fmt(change);
+      el('checkout-change').style.color = '';
+      el('checkout-kulang-section').style.display = 'none';
+    }
+  },
+  _posCompleteSale() {
+    const total = Pages._posCart.reduce((s, c) => s + c.price * c.qty, 0);
+    const tendered = parseFloat(el('checkout-tendered').value) || 0;
+    let kulangAmount = 0;
+    let kulangName = '';
+    
+    if (tendered < total) {
+      kulangAmount = total - tendered;
+      kulangName = el('checkout-kulang-name').value.trim();
+      if (!kulangName) {
+        Toast.show('Please enter a name for the shortage.', 'error');
+        return;
       }
     }
-
+    
+    DS.sales.add({
+      items: [...Pages._posCart.map(c => ({ productId: c.productId, qty: c.qty, price: c.price }))],
+      total,
+      paymentMethod: 'cash',
+      tendered,
+      kulangAmount,
+      kulangName
+    });
+    
+    Modal.close('checkoutModal');
     Toast.show(`Sale completed! ${fmt(total)}`, 'success');
     Pages._posCart = [];
     Pages._posRenderCart();
@@ -407,8 +456,6 @@ const Pages = {
     
     if (method === 'cash') {
       DS.cashvault.add({ type: 'deposit', amount, note: `Utang payment from ${custName}` });
-    } else if (method === 'gcash') {
-      DS.gcash.add({ type: 'cash_in', amount, fee: 0, note: `Utang payment from ${custName}` });
     }
     
     Modal.close('payModal');
@@ -444,39 +491,36 @@ const Pages = {
   },
 
   // ══════════════════════════════════════════════
-  // GCASH
+  // KULANG (SHORTAGES)
   // ══════════════════════════════════════════════
-  gcash() {
-    el('gcash-balance').textContent = fmt(DS.gcash.balance());
-    const tbody = el('gcash-tbody');
-    const txns = DS.gcash.recent(30);
+  kulang() {
+    el('kulang-total-balance').textContent = fmt(DS.kulang.totalUnpaid());
+    const tbody = el('kulang-tbody');
+    const txns = DS.kulang.all().sort((a,b) => new Date(b.date) - new Date(a.date));
+    
     if (txns.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-state-icon">${ICONS.gcash}</div><h5>No GCash transactions</h5><p>Record your first GCash transaction.</p></div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">${ICONS.utang}</div><h5>No shortages</h5><p>When someone pays less than the total, it will appear here.</p></div></td></tr>`;
     } else {
-      tbody.innerHTML = txns.map(g => `
+      tbody.innerHTML = txns.map(k => `
         <tr>
-          <td style="font-size:var(--text-xs)">${DS.fmt.datetime(g.date)}</td>
-          <td><span class="badge-pill ${gcashTypeBadge(g.type)}">${gcashTypeLabel(g.type)}</span></td>
-          <td class="text-money" style="font-weight:700">${fmt(g.amount)}</td>
-          <td class="text-money" style="color:var(--color-text-muted)">${fmt(g.fee||0)}</td>
-          <td style="font-size:var(--text-sm)">${escHTML(g.note||'—')}</td>
+          <td style="font-size:var(--text-xs)">${DS.fmt.datetime(k.date)}</td>
+          <td style="font-weight:600">${escHTML(k.name)}</td>
+          <td class="text-money" style="color:var(--color-text-muted)">${fmt(k.originalAmount)}</td>
+          <td class="text-money" style="font-weight:700;color:var(--color-warning)">${fmt(k.amountLacking)}</td>
+          <td><span class="badge-pill ${k.status === 'paid' ? 'badge-success' : 'badge-danger'}">${k.status.toUpperCase()}</span></td>
+          <td style="text-align:right">
+            ${k.status === 'unpaid' ? `<button class="btn-primary" style="padding:4px 12px;font-size:var(--text-xs)" onclick="Pages._markKulangPaid('${k.id}')">Mark Paid</button>` : ''}
+          </td>
         </tr>
       `).join('');
     }
   },
-  _openGCashAdd() {
-    el('gcash-form').reset();
-    Modal.open('gcashModal');
-    setTimeout(() => el('gcash-amount').focus(), 200);
-  },
-  _saveGCash() {
-    const amount = parseFloat(el('gcash-amount').value);
-    const type   = el('gcash-type').value;
-    if (isNaN(amount) || amount <= 0) { Toast.show('Enter valid amount.','error'); return; }
-    DS.gcash.add({ type, amount, fee: parseFloat(el('gcash-fee').value)||0, note: el('gcash-note').value.trim() });
-    Modal.close('gcashModal');
-    Pages.gcash();
-    Toast.show('GCash transaction recorded.','success');
+  _markKulangPaid(id) {
+    Confirm.show('Mark this shortage as paid? The amount will be added to your Cash Vault.', () => {
+      DS.kulang.markPaid(id);
+      Pages.kulang();
+      Toast.show('Shortage marked as paid.', 'success');
+    }, 'Mark as Paid');
   },
 
   // ══════════════════════════════════════════════
@@ -584,8 +628,6 @@ const Pages = {
        data.paidAt = new Date().toISOString();
        if (source === 'cash') {
            DS.cashvault.add({ type: 'expense', amount: amt, note: `Paid bill: ${name}` });
-       } else if (source === 'gcash') {
-           DS.gcash.add({ type: 'cash_out', amount: amt, fee: 0, note: `Paid bill: ${name}` });
        }
     }
     

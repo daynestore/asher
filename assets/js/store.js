@@ -146,22 +146,23 @@ const DS = (() => {
           });
         }
       }
-      // If cash, add to cashvault
+      // If cash, add to cashvault (amount tendered)
       if (s.paymentMethod === 'cash') {
+        const tendered = s.tendered !== undefined ? s.tendered : s.total;
         cashvault.add({
           type: 'deposit',
-          amount: s.total,
+          amount: tendered,
           note: `POS Sale #${sale.id.slice(-6).toUpperCase()}`
         });
-      }
-      // If gcash, add to gcash ledger
-      if (s.paymentMethod === 'gcash') {
-        gcash.add({
-          type: 'sale',
-          amount: s.total,
-          fee: 0,
-          note: `POS Sale #${sale.id.slice(-6).toUpperCase()}`
-        });
+        // If lacking, add to kulang
+        if (s.kulangAmount && parseFloat(s.kulangAmount) > 0) {
+          kulang.add({
+            name: s.kulangName || 'Unknown',
+            originalAmount: s.total,
+            amountLacking: parseFloat(s.kulangAmount),
+            saleId: sale.id
+          });
+        }
       }
       return sale;
     },
@@ -233,29 +234,33 @@ const DS = (() => {
     }
   };
 
-  // ── GCash ──
-  const gcash = {
-    all() { return get('gcash') || []; },
-    save(arr) { return set('gcash', arr); },
+  // ── Kulang (Shortages) ──
+  const kulang = {
+    all() { return get('kulang') || []; },
+    save(arr) { return set('kulang', arr); },
     add(entry) {
-      const arr = gcash.all();
-      const record = { ...entry, id: uid(), date: new Date().toISOString() };
+      const arr = kulang.all();
+      const record = { ...entry, id: uid(), date: new Date().toISOString(), status: 'unpaid' };
       arr.push(record);
-      gcash.save(arr);
+      kulang.save(arr);
       return record;
     },
-    balance() {
-      return gcash.all().reduce((sum, g) => {
-        const amount = parseFloat(g.amount) || 0;
-        const fee = parseFloat(g.fee) || 0;
-        if (g.type === 'cash_in') return sum + amount - fee;
-        if (g.type === 'cash_out') return sum - amount - fee;
-        if (g.type === 'sale') return sum + amount;
-        return sum;
-      }, 0);
+    markPaid(id) {
+      const arr = kulang.all();
+      const item = arr.find(k => k.id === id);
+      if (item && item.status !== 'paid') {
+        item.status = 'paid';
+        item.paidAt = new Date().toISOString();
+        kulang.save(arr);
+        cashvault.add({
+          type: 'deposit',
+          amount: item.amountLacking,
+          note: `Kulang Paid: ${item.name}`
+        });
+      }
     },
-    recent(n = 20) {
-      return [...gcash.all()].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,n);
+    totalUnpaid() {
+      return kulang.all().reduce((sum, k) => k.status === 'unpaid' ? sum + (parseFloat(k.amountLacking) || 0) : sum, 0);
     }
   };
 
@@ -343,5 +348,5 @@ const DS = (() => {
     number(n) { return (parseFloat(n) || 0).toLocaleString('en-PH'); }
   };
 
-  return { uid, get, set, settings, products, sales, customers, utang, gcash, cashvault, bills, backup, fmt };
+  return { uid, get, set, settings, products, sales, customers, utang, kulang, cashvault, bills, backup, fmt };
 })();
