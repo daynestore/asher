@@ -307,35 +307,34 @@ const Pages = {
   },
   _posPopulateCustomers() {
     const custs = DS.customers.all();
-    const sel = el('pos-customer-select');
+    const sel = el('checkout-customer-list');
     if (!sel) return;
-    sel.innerHTML = `<option value="">Select Customer</option>` + custs.map(c => `<option value="${c.id}">${escHTML(c.name)}</option>`).join('');
+    sel.innerHTML = custs.map(c => `<option value="${escHTML(c.name)}">`).join('');
   },
   _posCheckout() {
     if (Pages._posCart.length === 0) { Toast.show('Cart is empty.','warning'); return; }
     const total = Pages._posCart.reduce((s, c) => s + c.price * c.qty, 0);
     const paymentMethod = Pages._posPayment;
 
+    el('checkout-total').textContent = fmt(total);
+    el('checkout-customer-name').value = '';
+    Pages._posPopulateCustomers();
+    
     if (paymentMethod === 'utang') {
-      const custId = el('pos-customer-select').value;
-      if (!custId) { Toast.show('Select a customer for utang.','error'); return; }
-      DS.sales.add({ items: [...Pages._posCart.map(c => ({ productId: c.productId, qty: c.qty, price: c.price }))], total, paymentMethod, customerId: custId });
-      Toast.show(`Sale completed! ${fmt(total)}`, 'success');
-      Pages._posCart = [];
-      Pages._posRenderCart();
-      Pages._posRenderProducts(el('pos-search').value);
+      el('checkout-tendered-group').style.display = 'none';
+      el('checkout-change-group').style.display = 'none';
+      el('checkout-kulang-section').style.display = 'none';
     } else {
-      // Cash payment - open checkout modal
-      el('checkout-total').textContent = fmt(total);
+      el('checkout-tendered-group').style.display = 'block';
+      el('checkout-change-group').style.display = 'flex';
       el('checkout-tendered').value = total;
-      el('checkout-kulang-name').value = '';
       Pages._posCalcChange();
-      Modal.open('checkoutModal');
-      setTimeout(() => {
-        el('checkout-tendered').focus();
-        el('checkout-tendered').select();
-      }, 200);
     }
+    
+    Modal.open('checkoutModal');
+    setTimeout(() => {
+      el('checkout-customer-name').focus();
+    }, 200);
   },
   _posCalcChange() {
     const total = Pages._posCart.reduce((s, c) => s + c.price * c.qty, 0);
@@ -356,29 +355,50 @@ const Pages = {
   },
   _posCompleteSale() {
     const total = Pages._posCart.reduce((s, c) => s + c.price * c.qty, 0);
-    const tendered = parseFloat(el('checkout-tendered').value) || 0;
-    let kulangAmount = 0;
-    let kulangName = '';
+    const paymentMethod = Pages._posPayment;
+    const custName = el('checkout-customer-name').value.trim();
     
-    if (tendered < total) {
-      kulangAmount = total - tendered;
-      kulangName = el('checkout-kulang-name').value.trim();
-      if (!kulangName) {
-        Toast.show('Please enter a name for the shortage.', 'error');
-        return;
-      }
+    if (!custName) {
+      Toast.show('Customer name is required.', 'error');
+      return;
     }
     
-    DS.sales.add({
-      items: [...Pages._posCart.map(c => ({ productId: c.productId, qty: c.qty, price: c.price }))],
-      total,
-      paymentMethod: 'cash',
-      tendered,
-      kulangAmount,
-      kulangName
-    });
+    // Find or create customer
+    let cust = DS.customers.all().find(c => c.name.toLowerCase() === custName.toLowerCase());
+    if (!cust) {
+      cust = DS.customers.add({ name: custName });
+    }
+    
+    if (paymentMethod === 'utang') {
+      DS.sales.add({ 
+        items: [...Pages._posCart.map(c => ({ productId: c.productId, qty: c.qty, price: c.price }))], 
+        total, 
+        paymentMethod, 
+        customerId: cust.id 
+      });
+    } else {
+      const tendered = parseFloat(el('checkout-tendered').value) || 0;
+      let kulangAmount = 0;
+      
+      if (tendered < total) {
+        kulangAmount = total - tendered;
+      }
+      
+      DS.sales.add({
+        items: [...Pages._posCart.map(c => ({ productId: c.productId, qty: c.qty, price: c.price }))],
+        total,
+        paymentMethod: 'cash',
+        tendered,
+        kulangAmount,
+        kulangName: cust.name,
+        customerId: cust.id
+      });
+    }
     
     Modal.close('checkoutModal');
+    // If on mobile, close the cart panel
+    document.getElementById('pos-cart-panel').classList.remove('expanded');
+    
     Toast.show(`Sale completed! ${fmt(total)}`, 'success');
     Pages._posCart = [];
     Pages._posRenderCart();
@@ -418,20 +438,70 @@ const Pages = {
     el('utang-total-outstanding').textContent = fmt(DS.utang.totalOutstanding());
     el('utang-customer-count').textContent = DS.customers.all().length;
   },
-  _openAddCustomer() {
+  // ══════════════════════════════════════════════
+  // CUSTOMERS
+  // ══════════════════════════════════════════════
+  customers() { Pages._renderCustomersList(); },
+  _renderCustomersList(filter = '') {
+    const all = DS.customers.all();
+    const filtered = filter ? all.filter(c => c.name.toLowerCase().includes(filter.toLowerCase())) : all;
+    
+    const tbody = el('cust-tbody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="empty-state-icon">${ICONS.utang}</div><h5>No customers found</h5></div></td></tr>`;
+    } else {
+      tbody.innerHTML = filtered.map(c => `
+        <tr>
+          <td style="font-weight:600">${escHTML(c.name)}</td>
+          <td style="font-size:var(--text-xs);color:var(--color-text-muted)">${DS.fmt.date(c.createdAt)}</td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <button class="btn-icon" onclick="Pages._openEditCustomer('${c.id}')" aria-label="Edit">${ICONS.pencil}</button>
+              <button class="btn-icon btn-icon-danger" onclick="Pages._deleteCustomer('${c.id}')" aria-label="Delete">${ICONS.trash}</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+    el('cust-total-count').textContent = all.length;
+  },
+  _openAddCustomerForm() {
     el('cust-form').reset();
     el('cust-form-id').value = '';
+    el('cust-modal-title').textContent = 'New Customer';
+    Modal.open('custModal');
+    setTimeout(() => el('cust-name').focus(), 200);
+  },
+  _openEditCustomer(id) {
+    const c = DS.customers.find(id);
+    if (!c) return;
+    el('cust-form-id').value = c.id;
+    el('cust-name').value = c.name;
+    el('cust-modal-title').textContent = 'Edit Customer';
     Modal.open('custModal');
     setTimeout(() => el('cust-name').focus(), 200);
   },
   _saveCustomer() {
+    const id = el('cust-form-id').value;
     const name = el('cust-name').value.trim();
     if (!name) { Toast.show('Customer name required.','error'); return; }
-    const data = { name, phone: el('cust-phone').value.trim(), address: el('cust-address').value.trim() };
-    DS.customers.add(data);
+    
+    if (id) {
+      DS.customers.update(id, { name });
+    } else {
+      DS.customers.add({ name });
+    }
     Modal.close('custModal');
-    Pages._renderUtangList();
-    Toast.show('Customer added.', 'success');
+    if (Nav.current === 'customers') Pages._renderCustomersList(el('cust-search') ? el('cust-search').value : '');
+    Toast.show('Customer saved.', 'success');
+  },
+  _deleteCustomer(id) {
+    const c = DS.customers.find(id);
+    Confirm.show(`Delete customer "${c ? c.name : ''}"?`, () => {
+      DS.customers.delete(id);
+      if (Nav.current === 'customers') Pages._renderCustomersList(el('cust-search') ? el('cust-search').value : '');
+      Toast.show('Customer deleted.','warning');
+    }, 'Delete Customer');
   },
   _utangPayment(customerId) {
     const c = DS.customers.find(customerId);

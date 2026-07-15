@@ -1,0 +1,63 @@
+<section id="page-customers" class="module-page active">
+  <div class="page-header mb-4">
+    <div class="page-header-left">
+      <h1>Customers</h1>
+      <p>Manage all your customers in one place.</p>
+    </div>
+    <div class="page-header-right">
+      <button class="btn-primary" onclick="Pages._openAddCustomerForm()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        New Customer
+      </button>
+    </div>
+  </div>
+
+  <div class="ds-card">
+    <div class="section-card-header">
+      <div style="font-weight:600;font-size:var(--text-md)">All Customers (<span id="cust-total-count">0</span>)</div>
+      <div class="product-search-bar" style="width:250px;max-width:100%">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803 7.5 7.5 0 0015.803 15.803z"/></svg>
+        <input type="text" class="form-control" id="cust-search" placeholder="Search customer..." oninput="Pages._renderCustomersList(this.value)">
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="ds-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Added On</th>
+            <th style="width:100px">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="cust-tbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add/Edit Customer Modal -->
+  <div class="modal-overlay" id="custModal" role="dialog" aria-modal="true" aria-labelledby="cust-modal-title">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <div class="modal-title" id="cust-modal-title">Customer</div>
+        <button class="modal-close" onclick="Modal.close('custModal')" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="cust-form" onsubmit="event.preventDefault(); Pages._saveCustomer()">
+          <input type="hidden" id="cust-form-id">
+          <div class="mb-3">
+            <label class="form-label" for="cust-name">Customer Name <span class="required">*</span></label>
+            <input type="text" class="form-control" id="cust-name" required placeholder="Enter name">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="Modal.close('custModal')">Cancel</button>
+        <button class="btn-primary" onclick="Pages._saveCustomer()">Save</button>
+      </div>
+    </div>
+  </div>
+</section>

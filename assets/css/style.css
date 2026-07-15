@@ -1217,6 +1217,11 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   }
   .mobile-footer { display: block; }
   
+  /* Hide footer when cart is open */
+  body:has(.cart-panel.expanded) .mobile-footer {
+    display: none;
+  }
+  
   .pos-mobile-complete-btn {
     display: block;
     position: fixed;

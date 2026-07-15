@@ -109,7 +109,7 @@ const Nav = {
     const titles = {
       dashboard: 'Dashboard', inventory: 'Inventory', pos: 'Point of Sale',
       utang: 'Utang (Credit)', kulang: 'Shortages (Kulang)', cashvault: 'Cash Vault',
-      bills: 'Bills & Expenses', reports: 'Reports', settings: 'Settings'
+      bills: 'Bills & Expenses', reports: 'Reports', customers: 'Customers', settings: 'Settings'
     };
     return titles[p] || p;
   }
