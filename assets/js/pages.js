@@ -396,9 +396,21 @@ const Pages = {
   _savePayment() {
     const custId = el('pay-form-id').value;
     const amount = parseFloat(el('pay-amount').value);
+    const method = el('pay-method') ? el('pay-method').value : 'cash';
     if (isNaN(amount) || amount <= 0) { Toast.show('Enter valid payment amount.','error'); return; }
     const note = el('pay-note').value.trim() || 'Payment received';
+    
     DS.utang.addTransaction(custId, { type: 'payment', amount, note });
+    
+    const cust = DS.customers.find(custId);
+    const custName = cust ? cust.name : 'Customer';
+    
+    if (method === 'cash') {
+      DS.cashvault.add({ type: 'deposit', amount, note: `Utang payment from ${custName}` });
+    } else if (method === 'gcash') {
+      DS.gcash.add({ type: 'cash_in', amount, fee: 0, note: `Utang payment from ${custName}` });
+    }
+    
     Modal.close('payModal');
     Pages._renderUtangList();
     Toast.show(`Payment of ${fmt(amount)} recorded.`, 'success');
@@ -548,6 +560,7 @@ const Pages = {
     el('bill-amount').value    = b.amount || '';
     el('bill-due').value       = b.dueDate || '';
     el('bill-status').value    = b.status || 'pending';
+    el('bill-status').dispatchEvent(new Event('change'));
     el('bill-modal-title').textContent = 'Edit Bill';
     Modal.open('billModal');
   },
@@ -555,8 +568,27 @@ const Pages = {
     const id   = el('bill-form-id').value;
     const name = el('bill-name').value.trim();
     const amt  = parseFloat(el('bill-amount').value);
+    const status = el('bill-status').value;
+    const source = el('bill-source') ? el('bill-source').value : 'none';
+    
     if (!name || isNaN(amt) || amt < 0) { Toast.show('Name and amount required.','error'); return; }
-    const data = { name, category: el('bill-category').value, amount: amt, dueDate: el('bill-due').value, status: el('bill-status').value };
+    
+    let wasPending = true;
+    if (id) {
+       const oldBill = DS.bills.all().find(b => b.id === id);
+       if (oldBill && oldBill.status === 'paid') wasPending = false;
+    }
+    
+    const data = { name, category: el('bill-category').value, amount: amt, dueDate: el('bill-due').value, status };
+    if (status === 'paid' && wasPending) {
+       data.paidAt = new Date().toISOString();
+       if (source === 'cash') {
+           DS.cashvault.add({ type: 'expense', amount: amt, note: `Paid bill: ${name}` });
+       } else if (source === 'gcash') {
+           DS.gcash.add({ type: 'cash_out', amount: amt, fee: 0, note: `Paid bill: ${name}` });
+       }
+    }
+    
     if (id) DS.bills.update(id, data);
     else    DS.bills.add(data);
     Modal.close('billModal');
@@ -564,9 +596,9 @@ const Pages = {
     Toast.show(id ? 'Bill updated.' : 'Bill added.', 'success');
   },
   _markBillPaid(id) {
-    DS.bills.update(id, { status: 'paid', paidAt: new Date().toISOString() });
-    Pages._renderBillsTable();
-    Toast.show('Bill marked as paid.', 'success');
+    Pages._openEditBill(id);
+    el('bill-status').value = 'paid';
+    el('bill-status').dispatchEvent(new Event('change'));
   },
   _deleteBill(id) {
     Confirm.show('Delete this bill?', () => {

@@ -293,9 +293,16 @@
         <label class="form-label" for="pay-amount">Payment Amount (₱) <span class="required">*</span></label>
         <input type="number" class="form-control" id="pay-amount" placeholder="0.00" min="0" step="0.01" inputmode="decimal">
       </div>
+      <div class="mb-3">
+        <label class="form-label" for="pay-method">Payment Method</label>
+        <select class="form-select" id="pay-method">
+          <option value="cash">Cash (Add to Cash Vault)</option>
+          <option value="gcash">GCash (Add to GCash)</option>
+        </select>
+      </div>
       <div>
         <label class="form-label" for="pay-note">Note</label>
-        <input type="text" class="form-control" id="pay-note" placeholder="e.g. Cash payment">
+        <input type="text" class="form-control" id="pay-note" placeholder="Optional">
       </div>
     </div>
     <div class="modal-footer">
@@ -445,11 +452,19 @@
           <label class="form-label" for="bill-due">Due Date</label>
           <input type="date" class="form-control" id="bill-due">
         </div>
-        <div>
+        <div class="mb-3">
           <label class="form-label" for="bill-status">Status</label>
-          <select class="form-select" id="bill-status">
+          <select class="form-select" id="bill-status" onchange="document.getElementById('bill-source-group').style.display = this.value === 'paid' ? 'block' : 'none'">
             <option value="pending">Pending</option>
             <option value="paid">Paid</option>
+          </select>
+        </div>
+        <div id="bill-source-group" style="display:none">
+          <label class="form-label" for="bill-source">Paid From</label>
+          <select class="form-select" id="bill-source">
+            <option value="cash">Cash Vault</option>
+            <option value="gcash">GCash</option>
+            <option value="none">Other (Do not deduct)</option>
           </select>
         </div>
       </form>

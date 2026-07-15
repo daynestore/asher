@@ -146,6 +146,23 @@ const DS = (() => {
           });
         }
       }
+      // If cash, add to cashvault
+      if (s.paymentMethod === 'cash') {
+        cashvault.add({
+          type: 'deposit',
+          amount: s.total,
+          note: `POS Sale #${sale.id.slice(-6).toUpperCase()}`
+        });
+      }
+      // If gcash, add to gcash ledger
+      if (s.paymentMethod === 'gcash') {
+        gcash.add({
+          type: 'sale',
+          amount: s.total,
+          fee: 0,
+          note: `POS Sale #${sale.id.slice(-6).toUpperCase()}`
+        });
+      }
       return sale;
     },
     today() {
