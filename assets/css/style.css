@@ -132,11 +132,21 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   position: fixed;
   inset: 0;
   z-index: var(--z-topbar);
-  background: linear-gradient(135deg, var(--color-background) 0%, var(--color-primary-light) 50%, var(--color-border) 100%);
+  background-color: var(--color-background);
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.1) 0%, transparent 60%),
+    repeating-linear-gradient(-45deg, rgba(124, 58, 237, 0.04) 0px, rgba(124, 58, 237, 0.04) 2px, transparent 2px, transparent 14px);
+  background-size: 100% 100%, 19.8px 19.8px;
+  animation: textureMove 2s linear infinite;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100dvh;
+}
+
+@keyframes textureMove {
+  0% { background-position: 0px 0px, 0px 0px; }
+  100% { background-position: 0px 0px, 19.8px 19.8px; }
 }
 
 .login-card {

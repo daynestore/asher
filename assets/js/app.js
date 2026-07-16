@@ -78,8 +78,7 @@ const Modal = {
 // ── Navigation ──
 const Nav = {
   current: 'dashboard',
-  cache: {},
-  async navigate(page) {
+  navigate(page) {
     Nav.current = page;
     document.querySelectorAll('.nav-item').forEach(n => {
       n.classList.toggle('active', n.dataset.page === page);
@@ -87,27 +86,16 @@ const Nav = {
     document.getElementById('pageTitle').textContent = Nav.pageTitle(page);
     if (window.innerWidth < 1024) App.closeSidebar();
 
-    const container = document.getElementById('pageContent');
-    
-    if (!Nav.cache[page]) {
-      container.innerHTML = '<div style="display:flex;justify-content:center;padding:100px 0;"><div class="spinner-border text-primary" role="status"></div></div>';
-      try {
-        const res = await fetch(`views/${page}.html?v=${Date.now()}`); // cache bust just in case during development
-        if (!res.ok) throw new Error('Page not found');
-        Nav.cache[page] = await res.text();
-      } catch(e) {
-        container.innerHTML = `<div class="empty-state">Failed to load view. <button class="btn-secondary mt-3" onclick="Nav.navigate('${page}')">Retry</button></div>`;
-        return;
-      }
-    }
-    
-    container.innerHTML = Nav.cache[page];
-    
+    // Show/hide embedded page sections
+    document.querySelectorAll('#pageContent .module-page').forEach(sec => {
+      sec.classList.toggle('active', sec.id === 'page-' + page);
+    });
+
     if (typeof Pages[page] === 'function') Pages[page]();
   },
   pageTitle(p) {
     const titles = {
-      dashboard: 'Dashboard', inventory: 'Inventory', pos: 'Point of Sale',
+      dashboard: 'Dashboard', inventory: 'Inventory', pos: 'Sales',
       utang: 'Utang (Credit)', kulang: 'Shortages (Kulang)', cashvault: 'Cash Vault',
       bills: 'Bills & Expenses', reports: 'Reports', customers: 'Customers', settings: 'Settings'
     };
@@ -182,6 +170,17 @@ const PIN = {
   MAX: 4,
   init() {
     PIN.updateDots();
+    // Keyboard support: listen for digits and backspace on the login page
+    document.addEventListener('keydown', e => {
+      // Only handle keyboard PIN when login page is visible
+      const loginPage = document.getElementById('loginPage');
+      if (!loginPage || loginPage.style.display === 'none') return;
+      if (e.key >= '0' && e.key <= '9') {
+        PIN.press(e.key);
+      } else if (e.key === 'Backspace') {
+        PIN.backspace();
+      }
+    });
   },
   press(digit) {
     if (PIN.entered.length >= PIN.MAX) return;
@@ -194,7 +193,7 @@ const PIN = {
     PIN.updateDots();
   },
   verify() {
-    const correct = DS.settings.get().pin || '1234';
+    const correct = '0411';
     if (PIN.entered === correct) {
       App.enter();
       setTimeout(PIN.reset, 400);

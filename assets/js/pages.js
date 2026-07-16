@@ -317,7 +317,7 @@ const Pages = {
     const paymentMethod = Pages._posPayment;
 
     el('checkout-total').textContent = fmt(total);
-    el('checkout-customer-name').value = '';
+    el('checkout-customer-name').value = 'Walk-in';
     Pages._posPopulateCustomers();
     
     if (paymentMethod === 'utang') {
@@ -333,7 +333,9 @@ const Pages = {
     
     Modal.open('checkoutModal');
     setTimeout(() => {
-      el('checkout-customer-name').focus();
+      if (paymentMethod !== 'utang') {
+        el('checkout-tendered').focus();
+      }
     }, 200);
   },
   _posCalcChange() {
@@ -356,12 +358,8 @@ const Pages = {
   _posCompleteSale() {
     const total = Pages._posCart.reduce((s, c) => s + c.price * c.qty, 0);
     const paymentMethod = Pages._posPayment;
-    const custName = el('checkout-customer-name').value.trim();
-    
-    if (!custName) {
-      Toast.show('Customer name is required.', 'error');
-      return;
-    }
+    let custName = el('checkout-customer-name').value.trim();
+    if (!custName) custName = 'Walk-in';
     
     // Find or create customer
     let cust = DS.customers.all().find(c => c.name.toLowerCase() === custName.toLowerCase());
@@ -876,7 +874,7 @@ const Pages = {
   },
   _clearAllData() {
     Confirm.show('This will permanently delete ALL store data. This cannot be undone!', () => {
-      ['products','sales','customers','utang','gcash','cashvault','bills'].forEach(k => DS.set(k,[]));
+      ['products','sales','customers','utang','gcash','cashvault','bills','kulang'].forEach(k => DS.set(k,[]));
       Toast.show('All data cleared.','warning');
       Nav.navigate('dashboard');
     }, 'Clear All Data');

@@ -14,6 +14,7 @@ const DS = (() => {
     gcash:     'daynestore_gcash',
     cashvault: 'daynestore_cashvault',
     bills:     'daynestore_bills',
+    kulang:    'daynestore_kulang',
     settings:  'daynestore_settings',
   };
 
@@ -288,7 +289,30 @@ const DS = (() => {
     }
   };
 
-  // ── Bills ──
+  // ── GCash ──
+  const gcash = {
+    all() { return get('gcash') || []; },
+    save(arr) { return set('gcash', arr); },
+    add(entry) {
+      const arr = gcash.all();
+      const record = { ...entry, id: uid(), date: new Date().toISOString() };
+      arr.push(record);
+      gcash.save(arr);
+      return record;
+    },
+    balance() {
+      return gcash.all().reduce((sum, c) => {
+        const amount = parseFloat(c.amount) || 0;
+        if (c.type === 'cash_in' || c.type === 'sale') return sum + amount;
+        if (c.type === 'cash_out' || c.type === 'fee') return sum - amount;
+        return sum;
+      }, 0);
+    },
+    recent(n = 20) {
+      return [...gcash.all()].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, n);
+    }
+  };
+
   const bills = {
     all() { return get('bills') || []; },
     save(arr) { return set('bills', arr); },
@@ -348,5 +372,5 @@ const DS = (() => {
     number(n) { return (parseFloat(n) || 0).toLocaleString('en-PH'); }
   };
 
-  return { uid, get, set, settings, products, sales, customers, utang, kulang, cashvault, bills, backup, fmt };
+  return { uid, get, set, settings, products, sales, customers, utang, kulang, cashvault, gcash, bills, backup, fmt };
 })();
