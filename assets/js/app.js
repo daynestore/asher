@@ -197,10 +197,10 @@ const Theme = {
       root.removeAttribute('data-theme');
       root.removeAttribute('data-bs-theme');
     }
-    const toggleBtn = document.getElementById('themeToggleBtn');
-    if (toggleBtn) {
-      toggleBtn.innerHTML = Theme.isDark ? ICONS.sun : ICONS.moon;
-    }
+    const toggleBtns = document.querySelectorAll('.theme-toggle-btn');
+    toggleBtns.forEach(btn => {
+      btn.innerHTML = Theme.isDark ? ICONS.sun : ICONS.moon;
+    });
   }
 };
 
@@ -238,7 +238,8 @@ const PIN = {
       App.enter();
       setTimeout(PIN.reset, 400);
     } else {
-      // Shake effect
+      // Shake effect & Warning
+      Toast.show('Incorrect PIN. Please try again.', 'error');
       document.querySelector('.pin-dots').style.animation = 'none';
       setTimeout(() => {
         const dots = document.querySelectorAll('.pin-dot');

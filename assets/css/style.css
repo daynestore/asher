@@ -179,9 +179,9 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--color-border);
-  padding: var(--space-10);
+  padding: var(--space-6);
   width: 100%;
-  max-width: 400px;
+  max-width: 320px;
   text-align: center;
 }
 
@@ -252,7 +252,7 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   align-items: center;
   justify-content: center;
 }
-.pin-key:hover { background: var(--color-primary-light); border-color: var(--color-secondary); transform: scale(1.03); }
+.pin-key:hover { background: var(--color-table-hover); border-color: var(--color-border); transform: scale(1.03); }
 .pin-key:active { transform: scale(0.97); }
 .pin-key.danger { color: var(--color-danger); }
 
@@ -805,7 +805,7 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   position: fixed;
   bottom: var(--space-6);
   right: var(--space-6);
-  z-index: var(--z-toast);
+  z-index: 9999;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
