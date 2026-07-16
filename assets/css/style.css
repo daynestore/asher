@@ -179,9 +179,9 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--color-border);
-  padding: var(--space-6);
-  width: 100%;
-  max-width: 320px;
+  padding: var(--space-5);
+  width: calc(100% - 32px);
+  max-width: 280px;
   text-align: center;
 }
 
@@ -251,9 +251,13 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   display: flex;
   align-items: center;
   justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease, transform 0.15s ease;
 }
-.pin-key:hover { background: var(--color-table-hover); border-color: var(--color-border); transform: scale(1.03); }
-.pin-key:active { transform: scale(0.97); }
+@media (hover: hover) {
+  .pin-key:hover { background: var(--color-table-hover); border-color: var(--color-border); transform: scale(1.03); }
+}
+.pin-key:active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); transform: scale(0.97); transition: none; }
 .pin-key.danger { color: var(--color-danger); }
 
 /* ── APP SHELL ── */
