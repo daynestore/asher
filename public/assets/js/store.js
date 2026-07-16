@@ -33,16 +33,52 @@ const DS = (() => {
   };
 
   // ── Core Storage ──
+  const CapacitorFilesystem = window.Capacitor ? window.Capacitor.Plugins.Filesystem : null;
+  const CapacitorDirectory = window.Capacitor && window.Capacitor.Plugins.Directory ? window.Capacitor.Plugins.Directory.Data : 'DATA';
+
+  let memoryCache = {};
+
+  async function init() {
+    for (const key in KEYS) {
+      const filename = KEYS[key] + '.json';
+      try {
+        if (CapacitorFilesystem) {
+          const res = await CapacitorFilesystem.readFile({ path: filename, directory: CapacitorDirectory, encoding: 'utf8' });
+          memoryCache[key] = JSON.parse(res.data);
+        } else {
+          const raw = localStorage.getItem(KEYS[key]);
+          memoryCache[key] = raw ? JSON.parse(raw) : null;
+        }
+      } catch (e) {
+        memoryCache[key] = null;
+      }
+      
+      // Defaults
+      if (!memoryCache[key]) {
+        memoryCache[key] = Array.isArray(DEFAULTS[key]) ? [] : (DEFAULTS[key] ? JSON.parse(JSON.stringify(DEFAULTS[key])) : null);
+      }
+    }
+  }
+
   function get(key) {
-    try {
-      const raw = localStorage.getItem(KEYS[key]);
-      return raw ? JSON.parse(raw) : (Array.isArray(DEFAULTS[key]) ? [] : (DEFAULTS[key] || null));
-    } catch(e) { console.error('DS.get error', e); return []; }
+    return memoryCache[key];
   }
 
   function set(key, data) {
-    try { localStorage.setItem(KEYS[key], JSON.stringify(data)); return true; }
-    catch(e) { console.error('DS.set error', e); return false; }
+    memoryCache[key] = data;
+    const str = JSON.stringify(data);
+    
+    if (CapacitorFilesystem) {
+      CapacitorFilesystem.writeFile({
+        path: KEYS[key] + '.json',
+        data: str,
+        directory: CapacitorDirectory,
+        encoding: 'utf8'
+      }).catch(e => console.error('Capacitor write error', e));
+    } else {
+      try { localStorage.setItem(KEYS[key], str); } catch(e){}
+    }
+    return true;
   }
 
   // ── ID Generator ──
@@ -372,5 +408,5 @@ const DS = (() => {
     number(n) { return (parseFloat(n) || 0).toLocaleString('en-PH'); }
   };
 
-  return { uid, get, set, settings, products, sales, customers, utang, kulang, cashvault, gcash, bills, backup, fmt };
+  return { init, uid, get, set, settings, products, sales, customers, utang, kulang, cashvault, gcash, bills, backup, fmt };
 })();

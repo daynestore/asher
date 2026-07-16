@@ -296,7 +296,6 @@
       <!-- ══ INVENTORY ══ -->
       <section id="page-inventory" class="module-page">
         <div class="page-header">
-          <div class="page-header-left"><h1>Inventory</h1><p>Manage your products, stock levels, and pricing.</p></div>
           <div class="page-header-right">
             <button class="btn-primary" id="inv-add-btn" onclick="Pages._openInvAdd()">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
@@ -322,8 +321,8 @@
               </select>
             </div>
           </div>
-          <div class="table-responsive-wrapper" style="border:none;border-radius:0">
-            <table class="ds-table" aria-label="Products inventory">
+          <div class="table-responsive-wrapper inventory-table-wrapper" style="border:none;border-radius:0">
+            <table class="ds-table inventory-table" aria-label="Products inventory">
               <thead><tr><th>Barcode</th><th>Product Name</th><th>Category</th><th>Cost</th><th>Price</th><th>Stock</th><th>Expires</th><th>Retail Value</th><th>Actions</th></tr></thead>
               <tbody id="inv-tbody"><tr><td colspan="9"><div class="empty-state"><div class="empty-state-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg></div><h5>No products yet</h5><p>Click "Add Product" to start.</p></div></td></tr></tbody>
             </table>
@@ -333,9 +332,6 @@
 
       <!-- ══ SALES (POS) ══ -->
       <section id="page-pos" class="module-page">
-        <div class="page-header" style="margin-bottom:16px">
-          <div class="page-header-left"><h1>Sales</h1><p>Tap a product to add it to the cart.</p></div>
-        </div>
         <div class="pos-grid">
           <button class="pos-mobile-complete-btn" onclick="document.getElementById('pos-cart-panel').classList.add('expanded')">Complete Selection (<span id="pos-mobile-cart-count-btn">0</span>)</button>
           <div>
@@ -374,7 +370,6 @@
       <!-- ══ UTANG ══ -->
       <section id="page-utang" class="module-page">
         <div class="page-header">
-          <div class="page-header-left"><h1>Utang (Credit)</h1><p>Track customer credit balances and payment history.</p></div>
           <div class="page-header-right"><button class="btn-primary" onclick="Pages._openAddCustomer()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg> Add Customer</button></div>
         </div>
         <div class="row g-3 mb-4">
@@ -400,7 +395,6 @@
       <!-- ══ KULANG (SHORTAGES) ══ -->
       <section id="page-kulang" class="module-page">
         <div class="page-header" style="margin-bottom:24px">
-          <div class="page-header-left"><h1>Shortages (Kulang)</h1><p>Track underpayments from POS cash sales.</p></div>
           <div class="page-header-right text-end">
             <div style="font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:4px">Total Unpaid Shortages</div>
             <div class="fw-rubik" style="font-size:var(--text-2xl);font-weight:700;color:var(--color-warning);line-height:1" id="kulang-total-balance">₱0.00</div>
@@ -408,7 +402,7 @@
         </div>
         <div class="table-responsive-wrapper">
           <table class="ds-table" aria-label="Shortages Table">
-            <thead><tr><th>Date</th><th>Name / Note</th><th>Original Amount</th><th>Lacking</th><th>Status</th><th style="width:120px;text-align:right">Action</th></tr></thead>
+            <thead><tr><th>Date</th><th>Amount</th><th>Lacking</th><th>Status</th><th style="width:120px;text-align:right">Action</th></tr></thead>
             <tbody id="kulang-tbody"></tbody>
           </table>
         </div>
@@ -417,7 +411,6 @@
       <!-- ══ CASH VAULT ══ -->
       <section id="page-cashvault" class="module-page">
         <div class="page-header">
-          <div class="page-header-left"><h1>Cash Vault</h1><p>Track physical cash deposits, withdrawals, and expenses.</p></div>
           <div class="page-header-right"><button class="btn-primary" onclick="Pages._openCVAdd()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg> Add Entry</button></div>
         </div>
         <div class="row g-3 mb-4">
@@ -437,7 +430,6 @@
       <!-- ══ BILLS ══ -->
       <section id="page-bills" class="module-page">
         <div class="page-header">
-          <div class="page-header-left"><h1>Bills &amp; Expenses</h1><p>Track recurring expenses: electricity, water, internet, rent.</p></div>
           <div class="page-header-right"><button class="btn-primary" onclick="Pages._openAddBill()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg> Add Bill</button></div>
         </div>
         <div class="row g-3 mb-4">
@@ -457,9 +449,6 @@
 
       <!-- ══ REPORTS ══ -->
       <section id="page-reports" class="module-page">
-        <div class="page-header">
-          <div class="page-header-left"><h1>Reports</h1><p>Daily, weekly, monthly, and custom period sales reports.</p></div>
-        </div>
         <div class="ds-tabs mb-4" role="tablist" aria-label="Report period">
           <button class="ds-tab active" id="rpt-tab-daily"   onclick="Pages._setReportTab(this,'daily')"   role="tab">Daily</button>
           <button class="ds-tab"        id="rpt-tab-weekly"  onclick="Pages._setReportTab(this,'weekly')"  role="tab">Weekly</button>
@@ -501,7 +490,6 @@
       <!-- ══ CUSTOMERS ══ -->
       <section id="page-customers" class="module-page">
         <div class="page-header mb-4">
-          <div class="page-header-left"><h1>Customers</h1><p>Manage all your customers in one place.</p></div>
           <div class="page-header-right">
             <button class="btn-primary" onclick="Pages._openAddCustomerForm()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg> New Customer</button>
           </div>
@@ -522,9 +510,6 @@
 
       <!-- ══ SETTINGS ══ -->
       <section id="page-settings" class="module-page">
-        <div class="page-header">
-          <div class="page-header-left"><h1>Settings</h1><p>Configure store information, PIN, categories, and data backup.</p></div>
-        </div>
         <div class="row g-4">
           <div class="col-12 col-lg-6">
             <div class="section-card mb-4">
@@ -945,7 +930,7 @@
 <script src="assets/js/app.js"></script>
 <script src="assets/js/pages.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // ── Topbar date ──
   const topDate = document.getElementById('topbar-date');
   if (topDate) {
@@ -953,6 +938,9 @@ document.addEventListener('DOMContentLoaded', () => {
     topDate.textContent = now.toLocaleDateString('en-PH', { weekday:'short', month:'short', day:'numeric' });
     topDate.style.display = 'block';
   }
+
+  // ── Init Store (Async for Capacitor) ──
+  await DS.init();
 
   // ── Load store name on login page ──
   const s = DS.settings.get();

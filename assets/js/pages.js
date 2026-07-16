@@ -104,15 +104,15 @@ const Pages = {
     tbody.innerHTML = products.map(p => {
       const stockCls = parseInt(p.stock) === 0 ? 'badge-danger' : parseInt(p.stock) <= (parseInt(p.lowStockThreshold)||5) ? 'badge-warning' : 'badge-success';
       return `<tr>
-        <td style="font-size:var(--text-xs);color:var(--color-text-muted)">${escHTML(p.barcode||'—')}</td>
-        <td style="font-weight:600">${escHTML(p.name)}</td>
-        <td><span class="badge-pill badge-neutral">${escHTML(p.category||'—')}</span></td>
-        <td class="text-money">${fmt(p.costPrice)}</td>
-        <td class="text-money" style="color:var(--color-primary);font-weight:700">${fmt(p.sellingPrice)}</td>
-        <td><span class="badge-pill ${stockCls}">${p.stock}</span></td>
-        <td style="font-size:var(--text-xs)">${p.expirationDate ? DS.fmt.date(p.expirationDate) : '—'}</td>
-        <td class="text-money" style="color:var(--color-text-secondary)">${fmt((parseFloat(p.sellingPrice)||0)*(parseInt(p.stock)||0))}</td>
-        <td>
+        <td data-label="Barcode" style="font-size:var(--text-xs);color:var(--color-text-muted)">${escHTML(p.barcode||'—')}</td>
+        <td data-label="Product Name" style="font-weight:600">${escHTML(p.name)}</td>
+        <td data-label="Category"><span class="badge-pill badge-neutral">${escHTML(p.category||'—')}</span></td>
+        <td data-label="Cost" class="text-money">${fmt(p.costPrice)}</td>
+        <td data-label="Price" class="text-money" style="color:var(--color-primary);font-weight:700">${fmt(p.sellingPrice)}</td>
+        <td data-label="Stock"><span class="badge-pill ${stockCls}">${p.stock}</span></td>
+        <td data-label="Expires" style="font-size:var(--text-xs)">${p.expirationDate ? DS.fmt.date(p.expirationDate) : '—'}</td>
+        <td data-label="Retail Value" class="text-money" style="color:var(--color-text-secondary)">${fmt((parseFloat(p.sellingPrice)||0)*(parseInt(p.stock)||0))}</td>
+        <td data-label="Actions">
           <div style="display:flex;gap:6px">
             <button class="btn-icon" onclick="Pages._openInvEdit('${p.id}')" title="Edit" aria-label="Edit ${escHTML(p.name)}">${ICONS.pencil}</button>
             <button class="btn-icon" onclick="Pages._invAdjust('${p.id}')" title="Adjust Stock" aria-label="Adjust stock">${ICONS.tag}</button>
@@ -568,12 +568,11 @@ const Pages = {
     const txns = DS.kulang.all().sort((a,b) => new Date(b.date) - new Date(a.date));
     
     if (txns.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">${ICONS.utang}</div><h5>No shortages</h5><p>When someone pays less than the total, it will appear here.</p></div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-state-icon">${ICONS.utang}</div><h5>No shortages</h5><p>When someone pays less than the total, it will appear here.</p></div></td></tr>`;
     } else {
       tbody.innerHTML = txns.map(k => `
         <tr>
           <td style="font-size:var(--text-xs)">${DS.fmt.datetime(k.date)}</td>
-          <td style="font-weight:600">${escHTML(k.name)}</td>
           <td class="text-money" style="color:var(--color-text-muted)">${fmt(k.originalAmount)}</td>
           <td class="text-money" style="font-weight:700;color:var(--color-warning)">${fmt(k.amountLacking)}</td>
           <td><span class="badge-pill ${k.status === 'paid' ? 'badge-success' : 'badge-danger'}">${k.status.toUpperCase()}</span></td>
