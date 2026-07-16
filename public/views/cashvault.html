@@ -1,0 +1,33 @@
+<section id="page-cashvault" class="module-page active">
+
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1>Cash Vault</h1>
+            <p>Track physical cash deposits, withdrawals, and expenses.</p>
+          </div>
+          <div class="page-header-right">
+            <button class="btn-primary" onclick="Pages._openCVAdd()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              Add Entry
+            </button>
+          </div>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-md-4">
+            <div class="stat-card stat-primary">
+              <div class="stat-card-label">Cash on Hand</div>
+              <div class="stat-card-value" id="cv-balance">₱0.00</div>
+            </div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-title">Cash Ledger</div></div>
+          <div class="table-responsive-wrapper" style="border:none;border-radius:0">
+            <table class="ds-table" aria-label="Cash vault ledger">
+              <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Note</th></tr></thead>
+              <tbody id="cv-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      
+</section>

@@ -1,0 +1,6 @@
+{
+  "appId": "com.daynestore.app",
+  "appName": "DS",
+  "webDir": "public",
+  "bundledWebRuntime": false
+}

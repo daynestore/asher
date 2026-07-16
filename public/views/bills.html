@@ -1,0 +1,39 @@
+<section id="page-bills" class="module-page active">
+
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1>Bills &amp; Expenses</h1>
+            <p>Track recurring expenses: electricity, water, internet, rent.</p>
+          </div>
+          <div class="page-header-right">
+            <button class="btn-primary" onclick="Pages._openAddBill()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              Add Bill
+            </button>
+          </div>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-md-4">
+            <div class="stat-card stat-warning" style="--color-warning:var(--color-warning)">
+              <div class="stat-card-label">Total Pending</div>
+              <div class="stat-card-value" id="bills-total-pending" style="color:var(--color-warning)">₱0.00</div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="stat-card stat-primary">
+              <div class="stat-card-label">Total Paid</div>
+              <div class="stat-card-value" id="bills-total-paid">₱0.00</div>
+            </div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-title">Bills List</div></div>
+          <div class="table-responsive-wrapper" style="border:none;border-radius:0">
+            <table class="ds-table" aria-label="Bills list">
+              <thead><tr><th>Name</th><th>Category</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="bills-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      
+</section>

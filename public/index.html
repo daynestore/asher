@@ -945,7 +945,7 @@
 <script src="assets/js/app.js"></script>
 <script src="assets/js/pages.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   // ── Topbar date ──
   const topDate = document.getElementById('topbar-date');
   if (topDate) {
@@ -953,9 +953,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     topDate.textContent = now.toLocaleDateString('en-PH', { weekday:'short', month:'short', day:'numeric' });
     topDate.style.display = 'block';
   }
-
-  // ── Init Store (Async for Capacitor) ──
-  await DS.init();
 
   // ── Load store name on login page ──
   const s = DS.settings.get();

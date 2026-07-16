@@ -1,0 +1,10 @@
+{
+  "storeName": "Dayne Store",
+  "storeAddress": "",
+  "storePhone": "",
+  "pin": "1234",
+  "theme": "light",
+  "currency": "₱",
+  "categories": ["Beverages", "Snacks", "Canned Goods", "Personal Care", "Condiments", "Dairy", "Frozen", "Others"],
+  "logo": ""
+}
