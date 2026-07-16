@@ -42,10 +42,10 @@ const Pages = {
     } else {
       tbody.innerHTML = recent.map(s => `
         <tr>
-          <td><span class="fw-rubik" style="font-size:var(--text-xs);color:var(--color-text-muted)">${s.id.slice(-6).toUpperCase()}</span></td>
+          <td><span class="fw-rubik text-muted" style="font-size:var(--text-xs)">${s.id.slice(-6).toUpperCase()}</span></td>
           <td style="font-size:var(--text-sm)">${DS.fmt.datetime(s.date)}</td>
           <td><span class="badge-pill ${payBadge(s.paymentMethod)}">${payLabel(s.paymentMethod)}</span></td>
-          <td class="text-money" style="font-weight:700;color:var(--color-text-primary)">${fmt(s.total)}</td>
+          <td class="text-money" style="font-weight:700">${fmt(s.total)}</td>
         </tr>
       `).join('');
     }

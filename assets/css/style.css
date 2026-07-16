@@ -20,6 +20,9 @@
   --color-overlay:        #F5F3FF;
   --color-foreground:     #3B0764;
 
+  --color-topbar-bg:      rgba(255,255,255,0.92);
+  --color-table-hover:    rgba(0,0,0,0.04);
+
   --color-text-primary:   #1E1B4B;
   --color-text-secondary: #4C4480;
   --color-text-muted:     #9CA3AF;
@@ -89,6 +92,28 @@
   --space-12: 48px;
 }
 
+html[data-theme="dark"] {
+  --color-background:     #0F172A;
+  --color-surface:        #1E293B;
+  --color-overlay:        #0F172A;
+  --color-foreground:     #F1F5F9;
+
+  --color-topbar-bg:      rgba(30, 41, 59, 0.92);
+  --color-table-hover:    rgba(255,255,255,0.04);
+
+  --color-text-primary:   #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted:     #64748B;
+
+  --color-border:         #334155;
+  --color-border-strong:  #475569;
+
+  /* Keep brand and status colors but maybe slightly adjust them if needed. For now they work on dark. */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.7), 0 2px 4px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.9), 0 4px 8px rgba(0,0,0,0.5);
+}
 /* ── Base Reset & Typography ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -368,7 +393,7 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   position: sticky;
   top: 0;
   z-index: var(--z-raised);
-  background: rgba(255,255,255,0.92);
+  background: var(--color-topbar-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--color-border);
   padding: 0 var(--space-6);
@@ -694,7 +719,7 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
 .ds-table tbody tr {
   transition: background var(--transition-fast);
 }
-.ds-table tbody tr:hover { background: var(--color-primary-light); }
+.ds-table tbody tr:hover { background: var(--color-table-hover); }
 .ds-table tbody tr:last-child td { border-bottom: none; }
 
 .table-responsive-wrapper {
