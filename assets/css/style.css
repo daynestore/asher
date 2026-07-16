@@ -1435,3 +1435,46 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   .product-grid { grid-template-columns: repeat(2, 1fr); }
   .pin-keypad { gap: var(--space-2); }
 }
+
+@media (max-width: 767px) {
+  .ds-table.mobile-stacked {
+    display: block;
+  }
+  .ds-table.mobile-stacked thead {
+    display: none;
+  }
+  .ds-table.mobile-stacked tbody,
+  .ds-table.mobile-stacked tr,
+  .ds-table.mobile-stacked td {
+    display: block;
+    width: 100%;
+  }
+  .ds-table.mobile-stacked tr {
+    margin-bottom: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    padding: var(--space-2);
+  }
+  .ds-table.mobile-stacked td {
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    text-align: right;
+  }
+  .ds-table.mobile-stacked td:last-child {
+    border-bottom: none;
+  }
+  .ds-table.mobile-stacked td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    margin-right: 15px;
+    text-align: left;
+  }
+}
+
