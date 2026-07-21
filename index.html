@@ -365,6 +365,26 @@
             </div>
           </div>
         </div>
+        <div class="sales-records-actions">
+          <button class="btn-secondary sales-records-toggle" id="pos-sales-records-toggle" onclick="Pages._toggleSalesRecords()" aria-expanded="false" aria-controls="pos-sales-records-panel">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0L6 21m9.75-4.5L18 21M9 9.75h1.5m3 0H15m-6 3h1.5m3 0H15"/></svg>
+            Show Sales Records
+          </button>
+        </div>
+        <div class="section-card sales-records-panel" id="pos-sales-records-panel" hidden>
+          <div class="section-card-header">
+            <div>
+              <div class="section-card-title">Sales Records</div>
+              <div class="sales-records-summary" id="pos-sales-records-summary">0 records</div>
+            </div>
+          </div>
+          <div class="table-responsive-wrapper sales-records-wrapper">
+            <table class="ds-table sales-records-table" aria-label="All sales records">
+              <thead><tr><th>ID</th><th>Date</th><th>Items</th><th>Customer</th><th>Method</th><th>Tendered</th><th>Total</th></tr></thead>
+              <tbody id="pos-sales-records-tbody"></tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <!-- ══ UTANG ══ -->

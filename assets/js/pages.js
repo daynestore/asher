@@ -224,7 +224,9 @@ const Pages = {
     Pages._posRenderProducts();
     Pages._posRenderCart();
     Pages._posPopulateCustomers();
+    if (Pages._salesRecordsVisible) Pages._renderSalesRecords();
   },
+  _salesRecordsVisible: false,
   _posProducts: [],
   _posCart: [],
   _posPayment: 'cash',
@@ -401,6 +403,64 @@ const Pages = {
     Pages._posCart = [];
     Pages._posRenderCart();
     Pages._posRenderProducts(el('pos-search').value);
+    if (Pages._salesRecordsVisible) Pages._renderSalesRecords();
+  },
+  _toggleSalesRecords() {
+    const panel = el('pos-sales-records-panel');
+    const btn = el('pos-sales-records-toggle');
+    if (!panel || !btn) return;
+    Pages._salesRecordsVisible = panel.hasAttribute('hidden');
+    panel.toggleAttribute('hidden', !Pages._salesRecordsVisible);
+    btn.setAttribute('aria-expanded', String(Pages._salesRecordsVisible));
+    btn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0L6 21m9.75-4.5L18 21M9 9.75h1.5m3 0H15m-6 3h1.5m3 0H15"/></svg>
+      ${Pages._salesRecordsVisible ? 'Hide Sales Records' : 'Show Sales Records'}
+    `;
+    if (Pages._salesRecordsVisible) {
+      Pages._renderSalesRecords();
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  },
+  _renderSalesRecords() {
+    const tbody = el('pos-sales-records-tbody');
+    const summary = el('pos-sales-records-summary');
+    if (!tbody) return;
+
+    const records = [...DS.sales.all()].sort((a,b) => new Date(b.date) - new Date(a.date));
+    if (summary) {
+      const total = records.reduce((sum, sale) => sum + (parseFloat(sale.total) || 0), 0);
+      summary.textContent = `${records.length} ${records.length === 1 ? 'record' : 'records'} | ${fmt(total)} total`;
+    }
+
+    if (records.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">${ICONS.pos}</div><h5>No sales records</h5><p>Completed sales will appear here.</p></div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = records.map(s => {
+      const saleId = s.id ? s.id.slice(-6).toUpperCase() : 'SALE';
+      const customer = s.customerId ? DS.customers.find(s.customerId) : null;
+      const items = Array.isArray(s.items) ? s.items : [];
+      const itemLabel = items.length === 0
+        ? 'No item detail'
+        : items.map(item => {
+            const product = DS.products.find(item.productId);
+            const name = product ? product.name : 'Product';
+            return `${escHTML(name)} x${parseInt(item.qty) || 0}`;
+          }).join(', ');
+      const tendered = s.paymentMethod === 'cash' && s.tendered !== undefined ? fmt(s.tendered) : '—';
+      return `
+        <tr>
+          <td data-label="ID" class="sales-record-id">${saleId}</td>
+          <td data-label="Date">${DS.fmt.datetime(s.date)}</td>
+          <td data-label="Items" class="sales-record-items">${itemLabel}</td>
+          <td data-label="Customer">${escHTML(customer ? customer.name : s.kulangName || 'Walk-in')}</td>
+          <td data-label="Method"><span class="badge-pill ${payBadge(s.paymentMethod)}">${payLabel(s.paymentMethod)}</span></td>
+          <td data-label="Tendered" class="text-money">${tendered}</td>
+          <td data-label="Total" class="text-money sales-record-total">${fmt(s.total)}</td>
+        </tr>
+      `;
+    }).join('');
   },
 
   // ══════════════════════════════════════════════

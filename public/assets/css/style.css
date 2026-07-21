@@ -732,6 +732,56 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   border: 1px solid var(--color-border);
 }
 
+/* ── SALES RECORDS ── */
+.sales-records-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-4);
+}
+
+.sales-records-toggle svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.sales-records-panel {
+  margin-top: var(--space-4);
+}
+
+.sales-records-panel[hidden] {
+  display: none;
+}
+
+.sales-records-summary {
+  margin-top: 2px;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.sales-records-wrapper {
+  border: none;
+  border-radius: 0;
+}
+
+.sales-record-id {
+  color: var(--color-text-muted);
+  font-family: 'Rubik', sans-serif;
+  font-size: var(--text-xs);
+}
+
+.sales-record-items {
+  max-width: 320px;
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.sales-record-total {
+  color: var(--color-primary);
+  font-weight: 800;
+}
+
 /* ── MODALS ── */
 .modal-overlay {
   position: fixed;
@@ -845,6 +895,10 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
 
 /* ── POS SPECIFIC ── */
 .pos-grid { display: grid; grid-template-columns: 1fr 380px; gap: var(--space-5); min-height: 0; }
+
+.pos-mobile-complete-btn {
+  display: none;
+}
 
 .product-search-bar {
   position: relative;
@@ -1336,6 +1390,92 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
 
   .ds-tabs { overflow-x: auto; flex-wrap: nowrap; }
 
+  .sales-records-actions {
+    justify-content: stretch;
+  }
+
+  .sales-records-toggle {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .sales-records-table,
+  .sales-records-table thead,
+  .sales-records-table tbody,
+  .sales-records-table tr,
+  .sales-records-table th,
+  .sales-records-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .sales-records-table thead {
+    display: none;
+  }
+
+  .sales-records-table tbody {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  .sales-records-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xs);
+    padding: var(--space-4);
+  }
+
+  .sales-records-table td {
+    display: flex;
+    min-width: 0;
+    padding: 0;
+    border-bottom: 0;
+    background: transparent;
+    flex-direction: column;
+    gap: 3px;
+    color: var(--color-text-primary);
+  }
+
+  .sales-records-table td::before {
+    content: attr(data-label);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .sales-records-table td:nth-child(1),
+  .sales-records-table td:nth-child(2),
+  .sales-records-table td:nth-child(3),
+  .sales-records-table td:nth-child(4) {
+    grid-column: 1 / -1;
+  }
+
+  .sales-records-table td:nth-child(5),
+  .sales-records-table td:nth-child(6),
+  .sales-records-table td:nth-child(7) {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .sales-record-items {
+    max-width: none;
+  }
+
+  .sales-records-table td[colspan] {
+    display: block;
+    grid-column: 1 / -1;
+  }
+
+  .sales-records-table td[colspan]::before {
+    content: none;
+  }
+
   .inventory-table-wrapper {
     overflow-x: visible;
   }
@@ -1435,3 +1575,104 @@ button, a, [role="button"], .btn, .nav-link, .clickable {
   .product-grid { grid-template-columns: repeat(2, 1fr); }
   .pin-keypad { gap: var(--space-2); }
 }
+
+@media (max-width: 767px) {
+  .ds-table.mobile-stacked {
+    display: block;
+  }
+  .ds-table.mobile-stacked thead {
+    display: none;
+  }
+  .ds-table.mobile-stacked tbody,
+  .ds-table.mobile-stacked tr {
+    display: block;
+    width: 100%;
+  }
+  
+  .ds-table.mobile-stacked tr {
+    margin-bottom: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    padding: var(--space-4);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 12px;
+    align-items: start;
+  }
+
+  .ds-table.mobile-stacked td {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border: none !important;
+    text-align: left;
+    background: transparent !important;
+  }
+  
+  .ds-table.mobile-stacked td::before {
+    content: attr(data-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* Product Name */
+  .ds-table.mobile-stacked td:nth-child(2) {
+    grid-column: 1 / -1;
+    font-size: 18px;
+    font-weight: 700;
+    order: 1;
+    color: var(--color-primary);
+  }
+  .ds-table.mobile-stacked td:nth-child(2)::before { display: none; }
+  
+  /* Barcode */
+  .ds-table.mobile-stacked td:nth-child(1) {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    order: 2;
+    color: var(--color-text-secondary);
+    margin-top: -8px;
+  }
+  .ds-table.mobile-stacked td:nth-child(1)::before { display: none; }
+
+  /* Category */
+  .ds-table.mobile-stacked td:nth-child(3) { order: 3; }
+  
+  /* Stock */
+  .ds-table.mobile-stacked td:nth-child(6) { order: 4; align-items: flex-end; }
+  .ds-table.mobile-stacked td:nth-child(6)::before { align-self: flex-end; }
+  
+  /* Cost */
+  .ds-table.mobile-stacked td:nth-child(4) { order: 5; }
+  
+  /* Price */
+  .ds-table.mobile-stacked td:nth-child(5) { order: 6; align-items: flex-end; }
+  .ds-table.mobile-stacked td:nth-child(5)::before { align-self: flex-end; }
+  
+  /* Expires */
+  .ds-table.mobile-stacked td:nth-child(7) { order: 7; }
+  
+  /* Retail Value */
+  .ds-table.mobile-stacked td:nth-child(8) { order: 8; align-items: flex-end; }
+  .ds-table.mobile-stacked td:nth-child(8)::before { align-self: flex-end; }
+  
+  /* Actions */
+  .ds-table.mobile-stacked td:nth-child(9) {
+    order: 9;
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--color-border) !important;
+  }
+  .ds-table.mobile-stacked td:nth-child(9)::before { display: none; }
+}
+
